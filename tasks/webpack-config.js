@@ -10,7 +10,7 @@ let config = {
     entry: './src/js/app.js',
     output: {
         filename: './theme.js',
-        path: path.resolve(__dirname, '../site/dest/js/')
+        path: path.resolve(__dirname, '../site/dist/js/')
     },
     context: path.resolve(__dirname, '../site'),
     module: {

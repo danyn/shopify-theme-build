@@ -1,19 +1,29 @@
 const gulp = require('gulp');
-const jsCompiler = require('./webpack');
-const JSsrc = './site/src/**/*.js';
 
-
-
-function watchJS() {
-  gulp.watch(JSsrc, jsCompiler);
+function watchCSS() {
+  const CSSsrcWatch  = './site/src/css/**/*.css';
+  const CSSsrc  = './site/src/css/style.css';
+  const CSSdest = './site/dist/css/';
+  const postcss = require('gulp-postcss');
+  
+  function CSScompiler() {
+    return gulp.src(CSSsrc)
+          .pipe( postcss([ require('postcss-import'), require('autoprefixer'), require('postcss-nested')]) )
+          .pipe( gulp.dest(CSSdest) );
+  }
+  gulp.watch(CSSsrcWatch, CSScompiler);
 }
 
-const build = gulp.series( watchJS )
+function watchJS() {
+  const JScompiler = require('./webpack-config');
+  const JSsrc = './site/src/js/**/*.js';
+  gulp.watch(JSsrc, JScompiler);
+}
+
+
+const watch = gulp.parallel( watchJS, watchCSS );
 
 
 
-exports.build = build;
+exports.watch = watch;
 
-// function watchJS() {
-//   watch(JSsrc, jsCompiler);
-// }
