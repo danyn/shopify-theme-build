@@ -22,16 +22,32 @@
   "devDependencies": {
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
+    "@shopify/themekit": "^1.1.1",
     "autoprefixer": "^9.5.1",
     "babel-loader": "^8.0.5",
     "babel-register": "^6.26.0",
     "browserslist": "^4.5.5",
     "gulp": "^4.0.1",
     "gulp-postcss": "^8.0.0",
-    "jquery": "^3.4.0",
     "postcss-import": "^12.0.1",
     "postcss-nested": "^4.1.2",
     "webpack": "^4.30.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "@shopify/theme-a11y": "^2.0.1",
+    "@shopify/theme-addresses": "^1.0.0",
+    "@shopify/theme-cart": "^1.0.0-alpha.7",
+    "@shopify/theme-currency": "^1.0.0-alpha.7",
+    "@shopify/theme-images": "^1.0.0-alpha.7",
+    "@shopify/theme-product": "^1.0.0",
+    "@shopify/theme-product-form": "^1.0.0",
+    "@shopify/theme-rte": "^1.0.0-alpha.7",
+    "@shopify/theme-sections": "^1.1.0",
+    "@shopify/theme-variants": "^1.0.0-alpha.8",
+    "jquery": "^3.2.1",
+    "lazysizes": "^4.1.1",
+    "lodash-es": "^4.17.4",
+    "normalize.css": "^7.0.0",
+    "qrcode": "^1.3.2"
+  }
 }
