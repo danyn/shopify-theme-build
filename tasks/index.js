@@ -37,7 +37,7 @@ function buildCssDev(done) {
 
 function watchCssDev() {
   // watch all css templates/
-  gulp.watch(src_shopify_templates, function watching_shopify_templates(done) {
+  gulp.watch(src_shopify_templates, function watching_shopify_templates_for_css(done) {
     cssDevCompiler(src_shopify_templates, bulk_shopify_templates_css);
     cssDevConcatenator(bulk_shopify_templates_css, dist_shopify_snippets, 'all_templates.css');
     done();
