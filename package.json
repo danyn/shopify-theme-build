@@ -4,7 +4,7 @@
   "description": "A Frontend build automation for Shopify Theming",
   "main": "index.js",
   "scripts": {
-    "watch": "NODE_ENV=production gulp watch --gulpfile tasks"
+    "watchDev": "NODE_ENV=production gulp watchDev --gulpfile tasks"
   },
   "repository": {
     "type": "git",
@@ -28,9 +28,13 @@
     "babel-register": "^6.26.0",
     "browserslist": "^4.5.5",
     "gulp": "^4.0.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-include": "^2.4.1",
     "gulp-postcss": "^8.0.0",
+    "gulp-replace": "^1.0.0",
     "postcss-import": "^12.0.1",
     "postcss-nested": "^4.1.2",
+    "postcss-simple-vars": "^5.0.2",
     "webpack": "^4.30.0"
   },
   "dependencies": {
