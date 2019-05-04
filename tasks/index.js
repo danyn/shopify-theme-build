@@ -1,34 +1,47 @@
 const gulp = require('gulp');
+// core gulp modules
 const replace = require('gulp-replace');
 var concat = require('gulp-concat');
+// post css modules
+const postcss = require('gulp-postcss');
+const css_import = require('postcss-import');
+const css_prefixer =  require('autoprefixer');
+const css_nesting = require('postcss-nested');
+const css_vars = require('postcss-simple-vars');
 
-function watchCSS() {
-  const CSSsrcWatch  = ['./site/src/**/*.css', './site/src/**/*.css.liquid' ];
-  const CSSsrc  = './site/src/css/style.css.liquid';
-  const CSSdest = './site/dist/assets/';
-  const postcss = require('gulp-postcss');
-  
-  function CSScompiler( CSSfile, CSScompiled ) {
-    return gulp.src(CSSfile)
-          .pipe( postcss([ require('postcss-import'), require('autoprefixer'), require('postcss-nested'), require('postcss-simple-vars')]) )
-          .pipe(replace("'{{'", '{{'))
-          .pipe(replace("'}}'", '}}'))
-          .pipe( gulp.dest( CSScompiled ) );
-  }
+//global file locations
+const dist_shopify_snippets = './dist/snippets/';
+const src_shopify_templates  = './site/src/shopify/templates/**/*.css';
+const bulk_shopify_templates_css = './bulk/shopify/templates/css/';
 
-  if (process.env.NODE_ENV === 'development') {
-  gulp.watch(CSSsrcWatch, function CSSCompilation(done) {
-    CSScompiler(CSSsrc, CSSdest);
-    CSScompiler('./site/src/shopify/templates/product/product.css.liquid', CSSdest);
+
+function cssDevCompiler(fromCssLocation, toCompiledCssLocation) {
+  return gulp.src(fromCssLocation)
+        .pipe(postcss([css_import, css_nesting, css_vars, css_prefixer]))
+        .pipe(replace("'{{'", '{{'))
+        .pipe(replace("'}}'", '}}'))
+        .pipe(gulp.dest(toCompiledCssLocation));
+}
+
+function cssDevConcatenator(fromCssLocation, ToCssLocation, toCssFileName) {
+  return gulp.src(fromCssLocation)
+  .pipe(concat(toCssFileName))
+  .pipe(gulp.dest(ToCssLocation));
+}
+
+function buildCssDev(done) {
+  cssDevCompiler(src_shopify_templates, bulk_shopify_templates_css);
+  cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, dist_shopify_snippets, 'all_templates.css');
+  done();
+}
+
+function watchCssDev() {
+  // watch all css templates/
+  gulp.watch(src_shopify_templates, function watching_shopify_templates(done) {
+    cssDevCompiler(src_shopify_templates, bulk_shopify_templates_css);
+    cssDevConcatenator(bulk_shopify_templates_css, dist_shopify_snippets, 'all_templates.css');
     done();
   });
-  }else{
-
-    return  gulp.src('./site/dist/assets/*.css.liquid')
-           .pipe(concat('all.css'))
-           .pipe(gulp.dest('./site/dist/snippets'));
-
-  }
 }
 
 function watchJS() {
@@ -37,12 +50,13 @@ function watchJS() {
   gulp.watch(JSsrc, JScompiler);
 }
 
-const watchDev = gulp.parallel( watchCSS );
+const watchDev = gulp.parallel( watchCssDev );
+const buildDev = gulp.parallel(buildCssDev);
 // const watchDev = gulp.parallel( watchJS, watchCSS );
 
 
-
 exports.watchDev = watchDev;
+exports.buildDev = buildDev;
 
 //  ignore an error put as final stip in chain
 //  .on('error', function (err) { console.log(err.toString()); this.emit('end');})

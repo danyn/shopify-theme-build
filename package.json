@@ -4,7 +4,8 @@
   "description": "A Frontend build automation for Shopify Theming",
   "main": "index.js",
   "scripts": {
-    "watchDev": "NODE_ENV=production gulp watchDev --gulpfile tasks"
+    "watchDev": "NODE_ENV=production gulp watchDev --gulpfile tasks",
+    "buildDev": "NODE_ENV=development gulp buildDev --gulpfile tasks"
   },
   "repository": {
     "type": "git",
