@@ -39,7 +39,7 @@ function watchCssDev() {
   // watch all css templates/
   gulp.watch(src_shopify_templates, function watching_shopify_templates_for_css(done) {
     cssDevCompiler(src_shopify_templates, bulk_shopify_templates_css);
-    cssDevConcatenator(bulk_shopify_templates_css, dist_shopify_snippets, 'all_templates.css');
+    cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, dist_shopify_snippets, 'all_templates.css');
     done();
   });
 }
@@ -50,7 +50,7 @@ function watchJS() {
   gulp.watch(JSsrc, JScompiler);
 }
 
-const watchDev = gulp.parallel( watchCssDev );
+const watchDev = gulp.parallel(watchCssDev);
 const buildDev = gulp.parallel(buildCssDev);
 // const watchDev = gulp.parallel( watchJS, watchCSS );
 
