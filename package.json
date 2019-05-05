@@ -1,5 +1,5 @@
 {
-  "name": "build-theme",
+  "name": "chinook",
   "version": "1.0.0",
   "description": "A Frontend build automation for Shopify Theming",
   "main": "index.js",
@@ -12,7 +12,7 @@
     "url": "git+https://github.com/danyn/shopify-theme-automation.git"
   },
   "keywords": [
-    "shopify theme development"
+    "shopify theme development chinook jargon"
   ],
   "author": "Daniel Eisen",
   "license": "MIT",
@@ -31,6 +31,7 @@
     "gulp": "^4.0.1",
     "gulp-concat": "^2.6.1",
     "gulp-include": "^2.4.1",
+    "gulp-nunjucks-render": "^2.2.3",
     "gulp-postcss": "^8.0.0",
     "gulp-replace": "^1.0.0",
     "postcss-import": "^12.0.1",

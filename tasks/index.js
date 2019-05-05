@@ -2,6 +2,7 @@ const gulp = require('gulp');
 // core gulp modules
 const replace = require('gulp-replace');
 var concat = require('gulp-concat');
+var nunjucksRender = require('gulp-nunjucks-render');
 // post css modules
 const postcss = require('gulp-postcss');
 const css_import = require('postcss-import');
@@ -11,7 +12,9 @@ const css_vars = require('postcss-simple-vars');
 
 //global file locations
 const dist_shopify_snippets = './site/dist/snippets/';
-const src_shopify_theme = './site/src/shopify/**/';
+const bulk_shopify_snippets = './bulk/shopify/templates/css/';
+const bulk_nunjucks_css = './bulk/nunjucks-css/*.liquid';
+const src_shopify_theme = './site/src/shopify/**/*.liquid';
 const dist_shopify_theme = './site/dist/';
 const src_shopify_templates = './site/src/shopify/templates/';
 const src_shopify_templates_css  = `${src_shopify_templates}**/*.css`;
@@ -54,17 +57,26 @@ function cssDevConcatenator(fromCssLocation, ToCssLocation, toCssFileName) {
 
 function buildCssDev(done) {
   cssDevCompiler(src_shopify_templates_css, bulk_shopify_templates_css);
-  cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, dist_shopify_snippets, 'all_templates_css.liquid');
+  cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, bulk_shopify_snippets, 'cj_all-templates-css.liquid');
   done();
 }
-
+// all_templates_css
 function watchCssDev() {
   // watch all css templates/
   gulp.watch(src_shopify_templates_css, function watching_shopify_templates_for_css(done) {
     cssDevCompiler(src_shopify_templates_css, bulk_shopify_templates_css);
-    cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, dist_shopify_snippets, 'all_templates.css');
+    cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, bulk_shopify_snippets, 'cj_all-templates-css.liquid');
     done();
   });
+}
+
+function nunjucksCss() {
+  return gulp.src(bulk_nunjucks_css)
+         .pipe(nunjucksRender({
+          inheritExtension: true,
+          path: './bulk'
+         }))
+         .pipe(gulp.dest(dist_shopify_snippets));
 }
 // templates must be copied separately because the build structure places css with the template files
 // in the same folder for modular css and later in production for getting css only for  pages
@@ -87,7 +99,8 @@ function watchJS() {
 }
 
 const watchDev = gulp.parallel(watchCssDev);
-const buildDev = gulp.series(buildCssDev, copyTheme, copyThemeTemplates);
+const buildDev = gulp.series(buildCssDev, copyTheme, copyThemeTemplates, nunjucksCss);
+// , nunjucksCss
 // const watchDev = gulp.parallel( watchJS, watchCSS );
 
 
