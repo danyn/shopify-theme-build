@@ -66,7 +66,9 @@ function watchCssDev() {
     done();
   });
 }
-
+// templates must be copied separately because the build structure places css with the template files
+// in the same folder for modular css and later in production for getting css only for  pages
+// that rely on them during http requests -> this function flattens the folder structure again.
 function copyThemeTemplates() {
   return gulp.src(src_shopify_template_dirs)
   .pipe(gulp.dest(`${dist_shopify_theme}templates/`));
