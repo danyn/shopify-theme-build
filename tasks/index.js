@@ -3,6 +3,8 @@ const gulp = require('gulp');
 const replace = require('gulp-replace');
 var concat = require('gulp-concat');
 var nunjucksRender = require('gulp-nunjucks-render');
+const gulp_flatten = require('gulp-flatten');
+const gulp_rename = require('gulp-rename');
 // post css modules
 const postcss = require('gulp-postcss');
 const css_import = require('postcss-import');
@@ -48,18 +50,27 @@ function cssDevCompiler(fromCssLocation, toCompiledCssLocation) {
         .pipe(gulp.dest(toCompiledCssLocation));
 }
 
+function __cssDevCompiler() {
+  return cssDevCompiler(src_shopify_templates_css, bulk_shopify_templates_css);
+}
+
 function cssDevConcatenator(fromCssLocation, ToCssLocation, toCssFileName) {
   return gulp.src(fromCssLocation)
   .pipe(concat(toCssFileName))
   .pipe(gulp.dest(ToCssLocation));
 }
 
-function buildCssDev(done) {
-  cssDevCompiler(src_shopify_templates_css, bulk_shopify_templates_css);
-  cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css`, bulk_shopify_snippets, 'cj_all-templates-css.liquid');
-  done();
+function __cssDevConcatenator() {
+ return cssDevConcatenator(`${bulk_shopify_templates_css}**/*.css.liquid`, bulk_shopify_snippets, 'cj_all-templates-css.liquid');
 }
-// all_templates_css
+
+function cssDevSnippets() {
+  return gulp.src(`${bulk_shopify_snippets}**/*.css`)
+        .pipe(gulp_rename({ prefix: "_", suffix: ".css", extname: '.liquid' }))
+        .pipe(gulp_flatten())
+        .pipe(gulp.dest(`${dist_shopify_theme}snippets`));
+}
+
 function watchCssDev() {
   // watch all css templates/
   gulp.watch(src_shopify_templates_css, function watching_shopify_templates_for_css(done) {
@@ -77,9 +88,7 @@ function nunjucksCss() {
          }))
          .pipe(gulp.dest(dist_shopify_snippets));
 }
-// templates must be copied separately because the build structure places css with the template files
-// in the same folder for modular css and later in production for getting css only for  pages
-// that rely on them during http requests -> this function flattens the folder structure again.
+// templates must be copied separately because src folder structure places css with templates/  for modular css
 function copyThemeTemplates() {
   return gulp.src(src_shopify_template_dirs)
   .pipe(gulp.dest(`${dist_shopify_theme}templates/`));
@@ -103,15 +112,23 @@ function watchJS() {
 }
 
 const watchDev = gulp.parallel(watchCssDev);
-const buildDev = gulp.series(buildCssDev, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, nunjucksCss);
-// , nunjucksCss
-// const watchDev = gulp.parallel( watchJS, watchCSS );
+const buildDev = gulp.series(__cssDevCompiler, cssDevSnippets, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, nunjucksCss);
 
+// const watchDev = gulp.parallel( watchJS, watchCSS );
 
 exports.watchDev = watchDev;
 exports.buildDev = buildDev;
 
-//  ignore an error put as final stip in chain
-//  .on('error', function (err) { console.log(err.toString()); this.emit('end');})
 
-// conditional upon NODE_ENV
+// test individual function from npm run
+exports.concatCSS = __cssDevConcatenator;
+
+
+/* notes:
+ ignore an error put as final stip in chain
+ .on('error', function (err) { console.log(err.toString()); this.emit('end');})
+
+ flatten folder structure: https://stackoverflow.com/questions/24658011/can-you-remove-a-folder-structure-when-copying-files-in-gulp
+
+
+*/

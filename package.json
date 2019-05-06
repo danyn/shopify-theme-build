@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "watchDev": "NODE_ENV=production gulp watchDev --gulpfile tasks",
-    "buildDev": "NODE_ENV=development gulp buildDev --gulpfile tasks"
+    "buildDev": "NODE_ENV=development gulp buildDev --gulpfile tasks",
+    "concatCSS": "NODE_ENV=development gulp concatCSS --gulpfile tasks"
   },
   "repository": {
     "type": "git",
@@ -24,15 +25,18 @@
     "@babel/core": "^7.4.4",
     "@babel/preset-env": "^7.4.4",
     "@shopify/themekit": "^1.1.1",
+    "async": "^2.6.2",
     "autoprefixer": "^9.5.1",
     "babel-loader": "^8.0.5",
     "babel-register": "^6.26.0",
     "browserslist": "^4.5.5",
     "gulp": "^4.0.1",
     "gulp-concat": "^2.6.1",
+    "gulp-flatten": "^0.4.0",
     "gulp-include": "^2.4.1",
     "gulp-nunjucks-render": "^2.2.3",
     "gulp-postcss": "^8.0.0",
+    "gulp-rename": "^1.4.0",
     "gulp-replace": "^1.0.0",
     "postcss-import": "^12.0.1",
     "postcss-nested": "^4.1.2",
