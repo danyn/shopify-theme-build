@@ -14,13 +14,13 @@ const css_vars = require('postcss-simple-vars');
 const dist_shopify_snippets = './site/dist/snippets/';
 const bulk_shopify_snippets = './bulk/shopify/templates/css/';
 const bulk_nunjucks_css = './bulk/nunjucks-css/*.liquid';
-const src_shopify_theme = './site/src/shopify/**/*.liquid';
+const src_shopify_theme = './site/src/shopify/**/*.*';
 const dist_shopify_theme = './site/dist/';
 const src_shopify_templates = './site/src/shopify/templates/';
 const src_shopify_templates_css  = `${src_shopify_templates}**/*.css`;
 const bulk_shopify_templates_css = './bulk/shopify/templates/css/';
 
-const src_shopify_all_but_templates = [`${src_shopify_theme}*.*`, `!${src_shopify_templates}**/*.*`]
+const src_shopify_all_but_templates = [`${src_shopify_theme}`, `!${src_shopify_templates}**/*.*`];
 
 // in case we need to iterate more tightly
 
@@ -29,7 +29,6 @@ const src_shopify_template_dirs = [ `${src_shopify_templates}404/*.liquid`,
                                     `${src_shopify_templates}blog/*.liquid`,
                                     `${src_shopify_templates}cart/*.liquid`,
                                     `${src_shopify_templates}collection/*.liquid`,
-                                    `${src_shopify_templates}customers/*.liquid`,
                                     `${src_shopify_templates}gift_card/*.liquid`,
                                     `${src_shopify_templates}index/*.liquid`,
                                     `${src_shopify_templates}list-collections/*.liquid`,
@@ -39,7 +38,7 @@ const src_shopify_template_dirs = [ `${src_shopify_templates}404/*.liquid`,
                                     `${src_shopify_templates}product/*.liquid`,
                                     `${src_shopify_templates}search/*.liquid` ];
 
-
+const src_shopify_template_customers =  `${src_shopify_templates}customers/*.liquid`;
 
 function cssDevCompiler(fromCssLocation, toCompiledCssLocation) {
   return gulp.src(fromCssLocation)
@@ -86,6 +85,11 @@ function copyThemeTemplates() {
   .pipe(gulp.dest(`${dist_shopify_theme}templates/`));
 }
 
+function copyThemeTemplatesCustomers() {
+  return gulp.src(src_shopify_template_customers)
+  .pipe(gulp.dest(`${dist_shopify_theme}templates/customers`));
+}
+
 function copyTheme() {
   return gulp.src(src_shopify_all_but_templates)
   .pipe(gulp.dest(dist_shopify_theme));
@@ -99,7 +103,7 @@ function watchJS() {
 }
 
 const watchDev = gulp.parallel(watchCssDev);
-const buildDev = gulp.series(buildCssDev, copyTheme, copyThemeTemplates, nunjucksCss);
+const buildDev = gulp.series(buildCssDev, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, nunjucksCss);
 // , nunjucksCss
 // const watchDev = gulp.parallel( watchJS, watchCSS );
 
