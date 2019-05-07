@@ -5,14 +5,7 @@
 
 
 
-
-
-
-
-
-
-
-/* 
+/* Test Nesting and escaping the liquid braces */
 .image {
   width: 100%;
   max-width: 600px;
@@ -34,4 +27,4 @@
   &_reading {
     width: 560px;
   } 
-} */
+} 

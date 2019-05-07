@@ -1,5 +1,5 @@
 {
-  "name": "chinook",
+  "name": "chinook-theme-tool",
   "version": "1.0.0",
   "description": "A Frontend build automation for Shopify Theming",
   "main": "index.js",
