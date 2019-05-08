@@ -6,7 +6,7 @@
 
 
 /* Test Nesting and escaping the liquid braces */
-.image {
+/*.image {
   width: 100%;
   max-width: 600px;
   display: inline-block;
@@ -20,7 +20,7 @@
 }
 
 .container {
-  background-color: '{{' whatever.sdfsd.asdfds '}}';
+  background-color: '{{' settings.color_body_text '}}';
   max-width: 1400px;
   margin: 0 auto;
   columns: 5;
@@ -28,3 +28,4 @@
     width: 560px;
   } 
 } 
+*/

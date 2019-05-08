@@ -7,9 +7,9 @@ const webpack = require('webpack');
 
 let config = {
     mode: 'production',
-    entry: './src/js/app.js',
+    entry: './src/js/chinook.js',
     output: {
-        filename: './theme.js',
+        filename: './chinook.js',
         path: path.resolve(__dirname, '../site/dist/js/')
     },
     context: path.resolve(__dirname, '../site'),

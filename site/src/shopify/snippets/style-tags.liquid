@@ -1,0 +1,22 @@
+
+{%- if settings.development -%}
+  <style>
+  {%- include '_chinook-theme.css' -%}
+  </style>
+  {%- if template.name == 'product' -%}
+    <style>
+    {%- include '_product.css' -%} 
+    </style>
+  {%- elsif template.name == 'collection'  -%}
+    <style>
+    {%- include '_collection.css'  -%}
+    </style>
+  {%- endif-%}
+  
+{%- else -%}
+  {%- if layout == 'theme' -%}
+  <link type="text/css" href="{{ 'chinook-theme.css' | asset_url }}" rel="stylesheet">
+  {%- else -%}
+  <link rel="prefetch" href="{{ 'chinook-theme.css' | asset_url }}" as="style">
+  {%- endif -%} 
+{%- endif -%}

@@ -1,19 +1,13 @@
-
-/* test partials and nesting */
-.font {
-  font-family: 'Lato', sans-serif;
-  font-size: 22px;
-  color: black;
-  line-height: 1.2em;
-  font-weight: 300;
-  &__heading {
-    font-weight: 400;
-    font-size: 26px;
-    color: #4c4c4c;;
-  }
+/* DOGS  */
+/* DOGS  */
+/* DOGS  */
+/* DOGS  */
+/* DOGS  */
+/* DOGS  */
+body{
+  background: rgb(44, 154, 245);
 }
 
-.center {
-  text-align: center;
-}
+
+
 

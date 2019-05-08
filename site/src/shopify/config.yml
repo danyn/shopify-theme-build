@@ -1,0 +1,6 @@
+development:
+  password: 44d783d14d35753a533a6496fb2795c6
+  theme_id: "39053459512"
+  store: driftwood-memorials.myshopify.com
+  ignore_files:
+  - config/settings_data.json
