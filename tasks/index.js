@@ -115,23 +115,39 @@ function watchDevCss() {
 
 }
 
-function buildJS(done) {
+function jsBuild(done) {
    var promise = JScompiler();
    promise.then(function() {
     done();
    })
 }
 
-
-function watchJS() {
-
-  const JSsrc = './site/src/js/**/*.js';
-  gulp.watch(JSsrc, JScompiler);
+function jsDevSnippets() {
+  const paths = {
+    src: `${bulk}/js/theme/chinook.js`,
+    dest: `${dist}/snippets/`
+  }
+  return gulp.src(paths.src)
+          .pipe(gulp_rename({ prefix: "_", suffix: ".js", extname: '.liquid' }))
+          .pipe(gulp.dest(paths.dest));
 }
 
-const watchOnly = gulp.parallel(themekitWatch, watchDevCss);
+const jsDev = gulp.series(jsBuild, jsDevSnippets);
+
+function watchDevJs() {
+  const jsSrc = `${src}/js/**/*.js`;
+  gulp.watch(jsSrc, jsDev );
+}
+
+function watchShopify() {
+  gulp.watch(`${src}/shopify/**/*.*`,
+    gulp.series(copyThemeTemplates, copyThemeTemplatesCustomers, copyTheme)
+    );
+}
+
+const watchOnly = gulp.parallel(themekitWatch, watchDevCss, watchDevJs, watchShopify );
 const watch = gulp.series(__cssDevCompileTemplates, __cssDevCompileTheme, cssDevSnippets, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers,  gulp.parallel(themekitWatch, watchDevCss));
-const buildDev = gulp.series(__cssDevCompileTemplates, __cssDevCompileTheme, cssDevSnippets, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, themekitDeploy);
+const buildDev = gulp.series(__cssDevCompileTemplates, __cssDevCompileTheme, cssDevSnippets, jsDev, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, themekitDeploy);
 // const watchDevCss = gulp.parallel( watchJS, watchCSS );
 
 exports.watch= watch;
@@ -139,4 +155,4 @@ exports.watchOnly = watchOnly;
 exports.buildDev = buildDev;
 
 // test individual function from npm run
-exports.buildJS = buildJS;
+exports.buildJS = jsDev;

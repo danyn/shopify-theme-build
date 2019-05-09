@@ -6,11 +6,11 @@ const webpack = require('webpack');
 
 
 let config = {
-    mode: 'production',
+    mode: 'development',
     entry: './src/js/chinook.js',
     output: {
         filename: './chinook.js',
-        path: path.resolve(__dirname, '../site/dist/js/')
+        path: path.resolve(__dirname, '../bulk/js/theme/')
     },
     context: path.resolve(__dirname, '../site'),
     module: {
