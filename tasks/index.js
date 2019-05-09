@@ -18,7 +18,7 @@ const themeKit = require('@shopify/themekit');
 const themekit_path = './site/dist/';
 //webpack and webpack config object
 const JScompiler = require('./webpack-config');
-
+const webpackConfigObject = require('./web-config-object');
 //global file locations
 const bulk = './bulk';
 const src = './site/src';
@@ -99,41 +99,55 @@ function watchDevCss() {
   );
 }
 
-
-
 // js files
 
 function jsBuildGlobal(done) {
-  var promise = JScompiler();
+
+  const paths = {
+    src_resolve: '../site',
+    src_file: './src/js/chinook.js',
+    out_resolve: '../bulk/js/theme/',
+    out_file: './chinook.js'
+    };
+
+  const config = webpackConfigObject(paths); 
+
+  var promise = JScompiler(config);
   promise.then(function() {
    done();
   })
 }
 
+function jsBuildProduct(done) {
 
-function jsBuildTemplates(done) {
-  var paths = {
-    
-  }
-  var promise = JScompiler();
+  const paths = {
+    src_resolve: '../site',
+    src_file: './src/shopify/templates/product/product.js',
+    out_resolve: '../bulk/js/templates/',
+    out_file: './product.js'
+    };
+
+  const config = webpackConfigObject(paths); 
+
+  var promise = JScompiler(config);
   promise.then(function() {
    done();
   })
 }
-
-
 
 function jsDevSnippets() {
- const paths = {
-   src: `${bulk}/js/theme/chinook.js`,
-   dest: `${dist}/snippets/`
- }
- return gulp.src(paths.src)
+
+  const paths = {
+    src: [`${bulk}/js/theme/chinook.js`, `${bulk}/js/templates/*.js`],
+    dest: `${dist}/snippets/`
+  }
+
+  return gulp.src(paths.src)
          .pipe(gulp_rename({ prefix: "_", suffix: ".js", extname: '.liquid' }))
          .pipe(gulp.dest(paths.dest));
 }
 
-const jsDev = gulp.series(jsBuildGlobal, jsDevSnippets);
+const jsDev = gulp.series(jsBuildGlobal, jsBuildProduct, jsDevSnippets);
 
 function watchDevJsTheme() {
  const jsSrc = `${src}/js/**/*.js`;
