@@ -29,11 +29,15 @@ const bulk_nunjucks_css = `${bulk}/nunjucks-css/*.liquid`;
 
 const src_shopify_templates = `${src}/shopify/templates`;
 const src_shopify_templates_css  = `${src_shopify_templates}/**/*.css`;
+const src_shopify_templates_js = `${src_shopify_templates}/**/*.js`
 
-const src_shopify_all_but_templates = [`${src}/shopify/**/*.*`, `!${src_shopify_templates}/**/*.*`];
+const src_shopify_less_templates = [`${src}/shopify/**/*.*`, 
+                                   `!${src_shopify_templates}/**/*.*`
+                                   ];
 
 const src_shopify_template_customers =  `${src_shopify_templates}/customers/*.liquid`;
 
+// themekit commands
 function themekitDeploy(done) {
   themeKit.command('deploy', {env: 'development'}, {cwd: themekit_path });
   done();
@@ -43,6 +47,8 @@ function themekitWatch() {
   return themeKit.command('watch', {env: 'development'}, {cwd: themekit_path });
  
 }
+
+// css functions
 
 function cssDevCompiler(fromCssLocation, toCompiledCssLocation) {
   return gulp.src(fromCssLocation,  {since: gulp.lastRun(cssDevCompiler)})
@@ -81,7 +87,68 @@ function nunjucksCss() {
          }))
          .pipe(gulp.dest(`${dist}/snippets`));
 }
-// templates must be copied separately because src folder structure places css with templates/  for modular css
+
+
+function watchDevCss() {
+  gulp.watch(`${src}/shopify/templates/**/*.css`, 
+  gulp.series(__cssDevCompileTemplates, cssDevSnippets)
+  );
+
+  gulp.watch( `${src}/css/**/*.css`,
+   gulp.series(__cssDevCompileTheme, cssDevSnippets, updateFileMeta)
+  );
+}
+
+
+
+// js files
+
+function jsBuildGlobal(done) {
+  var promise = JScompiler();
+  promise.then(function() {
+   done();
+  })
+}
+
+
+function jsBuildTemplates(done) {
+  var paths = {
+    
+  }
+  var promise = JScompiler();
+  promise.then(function() {
+   done();
+  })
+}
+
+
+
+function jsDevSnippets() {
+ const paths = {
+   src: `${bulk}/js/theme/chinook.js`,
+   dest: `${dist}/snippets/`
+ }
+ return gulp.src(paths.src)
+         .pipe(gulp_rename({ prefix: "_", suffix: ".js", extname: '.liquid' }))
+         .pipe(gulp.dest(paths.dest));
+}
+
+const jsDev = gulp.series(jsBuildGlobal, jsDevSnippets);
+
+function watchDevJsTheme() {
+ const jsSrc = `${src}/js/**/*.js`;
+ gulp.watch(jsSrc, jsDev );
+}
+
+function watchDevJsTemplates() {
+
+  const $jsSrc = `${src}/shopify/templates/**/*.js`
+
+}
+
+
+// shopify skeleton theme files
+
 function copyThemeTemplates() {
   return gulp.src([`${src}/shopify/templates/**/*.liquid`, `!${src}/shopify/templates/customers/`])
         .pipe(gulp_flatten())
@@ -94,7 +161,7 @@ function copyThemeTemplatesCustomers() {
 }
 
 function copyTheme() {
-  return gulp.src(src_shopify_all_but_templates)
+  return gulp.src(src_shopify_less_templates)
         .pipe(gulp.dest(dist));
 }
 
@@ -104,40 +171,6 @@ function updateFileMeta(done){
   done();
 }
 
-function watchDevCss() {
-  gulp.watch(`${src}/shopify/templates/**/*.css`, 
-  gulp.series(__cssDevCompileTemplates, cssDevSnippets)
-  );
-
-  gulp.watch( `${src}/css/**/*.css`,
-   gulp.series(__cssDevCompileTheme, cssDevSnippets, updateFileMeta)
-  );
-
-}
-
-function jsBuild(done) {
-   var promise = JScompiler();
-   promise.then(function() {
-    done();
-   })
-}
-
-function jsDevSnippets() {
-  const paths = {
-    src: `${bulk}/js/theme/chinook.js`,
-    dest: `${dist}/snippets/`
-  }
-  return gulp.src(paths.src)
-          .pipe(gulp_rename({ prefix: "_", suffix: ".js", extname: '.liquid' }))
-          .pipe(gulp.dest(paths.dest));
-}
-
-const jsDev = gulp.series(jsBuild, jsDevSnippets);
-
-function watchDevJs() {
-  const jsSrc = `${src}/js/**/*.js`;
-  gulp.watch(jsSrc, jsDev );
-}
 
 function watchShopify() {
   gulp.watch(`${src}/shopify/**/*.*`,
@@ -145,7 +178,9 @@ function watchShopify() {
     );
 }
 
-const watchOnly = gulp.parallel(themekitWatch, watchDevCss, watchDevJs, watchShopify );
+
+
+const watchOnly = gulp.parallel(themekitWatch, watchDevCss, watchDevJsTheme, watchShopify );
 const watch = gulp.series(__cssDevCompileTemplates, __cssDevCompileTheme, cssDevSnippets, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers,  gulp.parallel(themekitWatch, watchDevCss));
 const buildDev = gulp.series(__cssDevCompileTemplates, __cssDevCompileTheme, cssDevSnippets, jsDev, copyTheme, copyThemeTemplates, copyThemeTemplatesCustomers, themekitDeploy);
 // const watchDevCss = gulp.parallel( watchJS, watchCSS );
